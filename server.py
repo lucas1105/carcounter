@@ -3,11 +3,10 @@ import json
 import os
 
 # third-party
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, render_template
 
 # local
 from mysql_database import read_sensores, insert_sensores
-
 
 app = Flask(__name__)
 
@@ -26,13 +25,30 @@ def sensores():
         # Devolve todos sensores
         return jsonify(read_sensores())
     elif request.method == 'POST':
-        #TODO: Verificar se veio algo no request.json caso nada tenta o request.body (xml), caso nenhum dos 2 manda o peixe a merda 10/10
-        # request.args << isso  o GET os args que vem com a URL depois do ? no path
-        # request.data << isso  o XML
-        # request.json << isso  adivinha? Hu3
+        # Verifica se tem um JSON no POST, caso no tenha procura no FORM
+        if request.json is not None:
+            dados = request.json
+        elif request.form is not None:
+            aux = request.form
+            dados = {'idsensores': int(aux['idsensores']), 'idusuario': int(aux['idusuario']), 'lat': float(aux['lat']),
+                     'lon': float(aux['lon']), 'nome': aux['nome'], 'descricao': aux['descricao']}
+        else:
+            dados = None
 
-        # TODO: Batch insert: Ler o JSON, se tiver uma lista como estrutura topo, ler cada item como sendo 1 sensor e ir inserindo as porra toda
-        # Insere um sensor
-        return str(insert_sensores(request.json))
+        if dados is not None:
+            # Insere um sensor
+            return str(insert_sensores(dados))
+        else:
+            return 'Se voce nao manda nada vou iserir oq? Teu cu?ahta'
     else:
         return 'Manda a mae! Aqui eh POST ou GET KRL!'
+
+
+@app.route('/html')
+def index():
+    return render_template('teste.html')
+
+
+@app.route('/cadastra_sensores')
+def cadastra_sensores():
+    return render_template('sensores.html')

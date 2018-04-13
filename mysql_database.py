@@ -38,7 +38,7 @@ def read_sensores():
 
     for (idsensores, idusuario, lat, lon, nome, descricao) in cursor:
         sensores_list.append({'idsensor': idsensores, 'idusuario': idusuario, 'lat': lat, 'lon': lon, 'nome': nome,
-                         'desricao': descricao})
+                         'descricao': descricao})
 
     cursor.close()
     cnx.close()
