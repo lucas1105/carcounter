@@ -121,3 +121,7 @@ def carros():
             return 'Se voce nao manda nada vou iserir oq? Teu cu?ahta'
     else:
         return 'Manda a mae! Aqui eh POST ou GET KRL!'
+
+
+if __name__ == '_main__':
+    app.run()
