@@ -1,6 +1,7 @@
 # Third-party
 import mysql.connector
 from mysql.connector import errorcode, connection
+
 #0.1
 
 def connect():
@@ -47,6 +48,84 @@ def read_sensores():
 
     return sensores
 
+def read_usuarios():
+    # Connect to database
+    cnx = connect()
+
+    # Creates a cursor (object used to read from gotten streams)
+    cursor = cnx.cursor()
+
+    # String da query
+    query = ("SELECT * FROM usuarios")
+
+    cursor.execute(query)
+    print(cursor)
+
+    # Dict pra retornar um JSON no webserver
+    usuarios_list = []
+
+    for (idusuarios, nome, status, login, senha, email) in cursor:
+        usuarios_list.append({'idusuario': idusuarios, 'nome': nome, 'status': status, 'login': login, 'senha': senha,
+                         'email': email})
+
+    cursor.close()
+    cnx.close()
+
+    usuarios = {'usuarios':usuarios_list}
+
+    return usuarios
+
+def read_carros():
+    # Connect to database
+    cnx = connect()
+
+    # Creates a cursor (object used to read from gotten streams)
+    cursor = cnx.cursor()
+
+    # String da query
+    query = ("SELECT * FROM carros")
+
+    cursor.execute(query)
+
+
+    # Dict pra retornar um JSON no webserver
+    carros_list = []
+
+    for (idcarros, horario, idsensor) in cursor:
+        carros_list.append({'idcarros': idcarros, 'idsensor':idsensor , 'horario': horario})
+
+    cursor.close()
+    cnx.close()
+
+    carros = {'carros':carros_list}
+
+    return carros
+
+def insert_carro(carro):
+    """
+    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
+
+    :param sensor: dict contendo os dados de um sensor
+    :type sensor: dict
+    :return:
+    """
+
+    cnx = connect()
+
+    cursor = cnx.cursor()
+    query = ("INSERT INTO carros (horario, idsensor) "
+             "VALUES (%(horario)s,%(idsensor)s)")
+
+    # Insert new employee
+    cursor.execute(query, carro)
+    idcarro = cursor.lastrowid
+
+    # Make sure data is committed to the database
+    cnx.commit()
+
+    cursor.close()
+    cnx.close()
+    return idcarro
 
 def insert_sensores(sensor):
     """
@@ -75,3 +154,31 @@ def insert_sensores(sensor):
     cursor.close()
     cnx.close()
     return idsensor
+
+def insert_usuario(usuario):
+    """
+    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
+
+    :param sensor: dict contendo os dados de um sensor
+    :type sensor: dict
+    :return:
+    """
+
+    cnx = connect()
+
+    cursor = cnx.cursor()
+
+    query = ("INSERT INTO usuarios (idusuarios, nome, status, login, senha, email) "
+             "VALUES (%(idusuarios)s, %(nome)s, %(status)s, %(login)s, %(senha)s, %(email)s)")
+
+    # Insert new employee
+    print(usuario)
+    cursor.execute(query, usuario)
+    idusuario = cursor.lastrowid
+
+    # Make sure data is committed to the database
+    cnx.commit()
+
+    cursor.close()
+    cnx.close()
+    return idusuario
