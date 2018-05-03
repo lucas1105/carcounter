@@ -4,10 +4,13 @@ import os
 #0.1
 # third-party
 from flask import Flask, request, abort, jsonify, render_template
+import eventlet
 
 # local
 from mysql_database import read_sensores, insert_sensores, read_usuarios, insert_usuario, read_carros, insert_carro
 import time
+
+eventlet.monkey_patch()
 app = Flask(__name__)
 
 
@@ -123,5 +126,5 @@ def carros():
         return 'Manda a mae! Aqui eh POST ou GET KRL!'
 
 
-if __name__ == '_main__':
+if __name__ == '__main__':
     app.run()
