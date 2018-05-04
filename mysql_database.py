@@ -7,7 +7,7 @@ from mysql.connector import errorcode, connection
 def connect():
     try:
         cnx = connection.MySQLConnection(user='root', password='admin',
-                                         host='127.0.0.1',
+                                         host='18.236.66.87',
                                          database='carcounter')
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -29,7 +29,8 @@ def read_sensores():
     cursor = cnx.cursor()
 
     # String da query
-    query = ("SELECT * FROM sensores")
+    query = ("SELECT * FROM sens"
+             "ores")
 
     cursor.execute(query)
     print(cursor)
