@@ -5,7 +5,7 @@ import os
 # third-party
 from flask import Flask, request, abort, jsonify, render_template
 import eventlet
-
+import datetime
 # local
 from mysql_database import read_sensores, insert_sensores, read_usuarios, insert_usuario, read_carros, insert_carro
 import time
@@ -105,6 +105,7 @@ def carros():
             list_horarios = str_horarios.split(',')
             ids = []
             for horario in list_horarios:
+                print(horario)
                 carro = {'idsensor': idsensor, 'horario': horario}
                 str(insert_carro(carro))
             return jsonify(read_carros())
@@ -112,12 +113,10 @@ def carros():
             dados = request.form
             idsensor = dados.get('id')
             str_horarios = dados.get('passagens')
-            print(str_horarios)
             list_horarios = str_horarios.split(',')
-            print(list_horarios)
             for horario in list_horarios:
-                print(horario)
-                carro = {'idsensor': idsensor, 'horario': horario}
+                now = datetime.datetime.now().strftime("%Y-%m-%d " + horario)
+                carro = {'idsensor': idsensor, 'horario': now}
                 str(insert_carro(carro))
             return jsonify(read_carros())
         else:
