@@ -204,26 +204,6 @@ def read_carroscalendario(diai, diaf, id):
 
 
 
-    #
-    #
-    #
-    #
-    #
-    #
-
-    #print(contagem)
-    # Dict pra retornar um JSON no webserver
-    #cursor.close()
-    #cnx.close()
-
-    return
-
-
-
-
-
-
-
 def insert_carro(carro):
     """
     Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
