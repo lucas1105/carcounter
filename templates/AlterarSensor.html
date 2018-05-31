@@ -62,7 +62,8 @@
 
         var json;
         var ourrequest = new XMLHttpRequest();
-        ourrequest.open('GET', 'http://18.238.66.87/sensores');        ourrequest.onload = function () {
+        ourrequest.open('GET', 'http://18.238.66.87/sensores');
+        ourrequest.onload = function () {
             var ourdata = JSON.parse(ourrequest.responseText);
             json = ourdata;
             console.log(json);
