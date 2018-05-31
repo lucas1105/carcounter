@@ -23,10 +23,10 @@
             var datasensores = JSON.parse(requestsensores.responseText);
             sensores=datasensores;
             console.log(sensores);
-            google.charts.load('current', {'packages':['table']});
-            google.charts.setOnLoadCallback(drawTable);
         }
         requestsensores.send();
+
+
 
     </script>
     <script type="text/javascript">
@@ -46,6 +46,8 @@
            var ourdata = JSON.parse(ourrequest.responseText);
            console.log(ourdata.carros);
            json=ourdata;
+           google.charts.load('current', {'packages':['table']});
+           google.charts.setOnLoadCallback(drawTable);
         };
         ourrequest.send();
 
