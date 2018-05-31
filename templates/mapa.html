@@ -102,7 +102,6 @@
         ourrequest.onload = function () {
             var ourdata = JSON.parse(ourrequest.responseText);
             json = ourdata;
-            console.log(json);
         };
         ourrequest.send();
 
@@ -119,8 +118,6 @@ function initMap() {
         zoom: 15,
         center: inicial,
     });
-    console.log(map);
-    console.log("oie");
     for (i=0;i<json.sensores.length;i++){
         var position = {lat: json.sensores[i].lat, lng: json.sensores[i].lon};
         var marker = new google.maps.Marker({

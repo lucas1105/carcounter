@@ -26,7 +26,6 @@
         ourrequest.onload = function () {
             var ourdata = JSON.parse(ourrequest.responseText);
             json = ourdata;
-            console.log("ola");
             google.charts.load("current", {packages: ["calendar"]});
             google.charts.setOnLoadCallback(drawChart);
         };
@@ -45,7 +44,6 @@
 
             var timeDiff = Math.abs(diaf.getTime() - diai.getTime());
             var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            console.log(json.carros);
             for (i = 0; i < diffDays; i++) {
                 id = json.carros[i];
                 dataTable.addRows([[new Date(diai.getFullYear(), diai.getMonth(), diai.getDate()), id]]);

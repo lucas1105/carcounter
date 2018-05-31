@@ -128,7 +128,6 @@
         ourrequest.onload = function () {
             var ourdata = JSON.parse(ourrequest.responseText);
             json = ourdata;
-            console.log(json);
             var x=document.getElementById("sel");
             var option;
             for (i=0;i<json.sensores.length;i++){
@@ -213,7 +212,6 @@
     document.getElementById("myButton").onclick = function () {
         var dia = document.getElementById("diacalendario").value;
         dia=dia.split("/");
-        console.log(dia[0]+dia[1]+dia[3]);
         var sensor = document.getElementById("sel");
 
         location.href = "tabela?dia="+dia[2]+"-"+dia[1]+"-"+dia[0]+"&id="+getsel();

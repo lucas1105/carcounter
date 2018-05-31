@@ -22,7 +22,6 @@
         requestsensores.onload = function () {
             var datasensores = JSON.parse(requestsensores.responseText);
             sensores=datasensores;
-            console.log(sensores);
         }
         requestsensores.send();
 
@@ -36,15 +35,13 @@
         var id = params.split('&')[1];
         dia=dia.split('=')[1];
         id=id.split('=')[1];
-        console.log(dia);
-        console.log(id);
+
 
       var json
         var ourrequest = new XMLHttpRequest();
         ourrequest.open('GET', 'http://18.236.66.87/carrostabela?dia='+dia+'&id='+id);
         ourrequest.onload = function () {
            var ourdata = JSON.parse(ourrequest.responseText);
-           console.log(ourdata.carros);
            json=ourdata;
            google.charts.load('current', {'packages':['table']});
            google.charts.setOnLoadCallback(drawTable);
