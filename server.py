@@ -59,7 +59,7 @@ def alterasensor():
         aux = request.form
         # verificar usuario depois
         dados = {'idusuario': 1, 'lat': float(aux['lat']), 'idsensor': int(aux['idsensor']),
-                 'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descrição']}
+                 'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descricao']}
         updatesensor(dados)
     return redirect("/")
 
