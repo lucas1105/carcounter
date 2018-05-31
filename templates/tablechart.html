@@ -22,7 +22,9 @@
         requestsensores.onload = function () {
             var datasensores = JSON.parse(requestsensores.responseText);
             sensores=datasensores;
-
+            console.log(sensores);
+            google.charts.load('current', {'packages':['table']});
+            google.charts.setOnLoadCallback(drawTable);
         }
         requestsensores.send();
 
@@ -36,8 +38,7 @@
         id=id.split('=')[1];
         console.log(dia);
         console.log(id);
-      google.charts.load('current', {'packages':['table']});
-      google.charts.setOnLoadCallback(drawTable);
+
       var json
         var ourrequest = new XMLHttpRequest();
         ourrequest.open('GET', 'http://18.236.66.87/carrostabela?dia='+dia+'&id='+id);
