@@ -1,0 +1,139 @@
+<html>
+<head>
+    <style>
+        #calendar_basic{
+            width: 80%;
+            height: 80%;
+            position: absolute;
+            top: 10%;
+            left: 20%;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        var queryString = window.location.href;
+        var params = queryString.split('?')[1];
+        var di = params.split('&')[0];
+        var df = params.split('&')[1];
+        var id = params.split('&')[2];
+        di = di.split('=')[1];
+        df = df.split('=')[1];
+        id = id.split('=')[1];
+        var json;
+        var ourrequest = new XMLHttpRequest();
+        ourrequest.open('GET', 'http://18.236.66.87/calendario?di=' + di + '&df=' + df + '&id=' + id);
+        ourrequest.onload = function () {
+            var ourdata = JSON.parse(ourrequest.responseText);
+            json = ourdata;
+            console.log("ola");
+            google.charts.load("current", {packages: ["calendar"]});
+            google.charts.setOnLoadCallback(drawChart);
+        };
+        ourrequest.send();
+
+
+        function drawChart() {
+            var dataTable = new google.visualization.DataTable();
+
+            dataTable.addColumn({type: 'date', id: 'Date'});
+            dataTable.addColumn({type: 'number', id: 'Won/Loss'});
+
+
+            var diai = new Date(di.split("-")[0] + "/" + di.split("-")[1] + "/" + di.split("-")[2]);
+            var diaf = new Date(df.split("-")[0] + "/" + df.split("-")[1] + "/" + df.split("-")[2]);
+
+            var timeDiff = Math.abs(diaf.getTime() - diai.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            console.log(json.carros);
+            for (i = 0; i < diffDays; i++) {
+                id = json.carros[i];
+                dataTable.addRows([[new Date(diai.getFullYear(), diai.getMonth(), diai.getDate()), id]]);
+                diai.setDate(diai.getDate() + 1);
+            }
+
+
+            var chart = new google.visualization.Calendar(document.getElementById('calendar_basic'));
+
+            var options = {
+                title: "Passagens por dia",
+                height: 900,
+            };
+
+            chart.draw(dataTable, options);
+        }
+    </script>
+       <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Car Counter</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/mapa">Mapa<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Cadastro
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/cadastrar_sensor">Cadastrar Sensor</a>
+          <a class="dropdown-item" href="/alterar_sensor#">Alterar Sensor</a>
+        </div>
+      </li>
+              <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Relatório
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/relatorio_diario">Relatório Diário</a>
+          <a class="dropdown-item" href="/relatorio_tabela">Relatório Tabela</a>
+          <a class="dropdown-item" href="/relatorio_calendario">Relatório Calendário</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div id="calendar_basic" style="width: 1000px; height: 350px;"></div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script>
+		$('.js-pscroll').each(function(){
+			var ps = new PerfectScrollbar(this);
+
+			$(window).on('resize', function(){
+				ps.update();
+			})
+		});
+
+
+	</script>
+<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+</body>
+</html>

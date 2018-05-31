@@ -1,6 +1,8 @@
 # Third-party
-import mysql.connector
+import mysql.connector, json
 from mysql.connector import errorcode, connection
+from datetime import datetime, date, time, timedelta
+
 
 #0.1
 
@@ -75,6 +77,25 @@ def read_usuarios():
 
     return usuarios
 
+
+def logincheck(login, senha):
+    # Connect to database
+    cnx = connect()
+
+    # Creates a cursor (object used to read from gotten streams)
+    cursor = cnx.cursor()
+
+    # String da query
+    query = ("SELECT * FROM usuarios where login = %s and senha = %s")
+
+
+    cursor.execute(query, (login, senha))
+    user=cursor.fetchone()
+
+    return user
+
+
+
 def read_carros():
     # Connect to database
     cnx = connect()
@@ -100,6 +121,108 @@ def read_carros():
     carros = {'carros':carros_list}
 
     return carros
+
+def read_carrostabela(dia, idsensor):
+    # Connect to database
+    cnx = connect()
+
+    # Creates a cursor (object used to read from gotten streams)
+    cursor = cnx.cursor()
+
+    # String da query
+    query = ("SELECT * FROM carros WHERE horario between '"+dia +" 00:00:00' and '" + dia + " 23:59:59' and idsensor =" + idsensor)
+
+    cursor.execute(query)
+
+
+    # Dict pra retornar um JSON no webserver
+    carros_list = []
+
+    for (idcarros, horario, idsensor) in cursor:
+        carros_list.append({'idcarros': idcarros, 'idsensor':idsensor , 'horario': horario})
+
+    cursor.close()
+    cnx.close()
+
+    carros = {'carros':carros_list}
+
+    return carros
+
+
+
+def read_carrosdia(dia, id):
+    # Connect to database
+    cnx = connect()
+
+    # Creates a cursor (object used to read from gotten streams)
+    cursor = cnx.cursor(buffered=True)
+    # String da query
+
+    t = time(00, 00)
+    t = time(t.hour + 1, 00)
+    contagem = {}
+    for i in range(24):
+        t = time(00, 00)
+        t = time(t.hour + i, 00)
+        querystring = ("select count(idcarros) from carros where horario between '" + dia + " " + str(
+            t.hour) + ":00:00' and '" + dia + " " + str(t.hour) + ":59:59' and idsensor="+id)
+        query = (querystring)
+        cursor.execute(query)
+        var = cursor.fetchall()
+        var1 = var[0][0]
+        dictstr = str(i)
+        contagem[dictstr] = var1
+    print(contagem)
+    # Dict pra retornar um JSON no webserver
+    cursor.close()
+    cnx.close()
+
+    return contagem
+
+def read_carroscalendario(diai, diaf, id):
+
+    cnx = connect()
+    cursor = cnx.cursor(buffered=True)
+
+    a = datetime.strptime(diai, "%Y-%m-%d")
+    b = datetime.strptime(diaf, "%Y-%m-%d")
+    delta=b-a
+
+    dias_list = []
+    dia=datetime.strptime(diai, "%Y-%m-%d")
+    for i in range(delta.days):
+        diaq=str(dia.year)+"-"+str(dia.month)+"-"+str(dia.day)
+        dia+= timedelta(days=1)
+        querystring = ("select count(idcarros) from carros where horario between '" + diaq + " 00:00:00' and '" + diaq + " 23:59:59' and idsensor=" + str(id))
+        query = (querystring)
+        cursor.execute(query)
+        var = cursor.fetchall()
+        dias_list.append(var[0][0])
+    dias = {'carros': dias_list}
+
+    return dias
+
+
+
+    #
+    #
+    #
+    #
+    #
+    #
+
+    #print(contagem)
+    # Dict pra retornar um JSON no webserver
+    #cursor.close()
+    #cnx.close()
+
+    return
+
+
+
+
+
+
 
 def insert_carro(carro):
     """
@@ -140,8 +263,36 @@ def insert_sensores(sensor):
 
     cursor = cnx.cursor()
 
-    query = ("INSERT INTO sensores (idsensores, idusuario, lat, lon, nome, descricao) "
-             "VALUES (%(idsensores)s, %(idusuario)s, %(lat)s, %(lon)s, %(nome)s, %(descricao)s)")
+    query = ("INSERT INTO sensores (idusuario, lat, lon, nome, descricao) "
+             "VALUES (%(idusuario)s, %(lat)s, %(lon)s, %(nome)s, %(descricao)s)")
+
+    # Insert new employee
+    print(sensor)
+    cursor.execute(query, sensor)
+    idsensor = cursor.lastrowid
+
+    # Make sure data is committed to the database
+    cnx.commit()
+
+    cursor.close()
+    cnx.close()
+    return idsensor
+
+def updatesensor(sensor):
+    """
+    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
+
+    :param sensor: dict contendo os dados de um sensor
+    :type sensor: dict
+    :return:
+    """
+
+    cnx = connect()
+    print(sensor["lat"])
+    cursor = cnx.cursor()
+
+    query = ("UPDATE sensores SET idusuario =%(idusuario)s"
+             ", lat=%(lat)s, lon=%(lon)s, nome=%(nome)s, descricao=%(descricao)s WHERE idsensores=%(idsensor)s")
 
     # Insert new employee
     print(sensor)

@@ -1,0 +1,137 @@
+<html>
+<head>
+    <style>
+        #curve_chart{
+            border: 20px solid black;
+     border-radius: 25px;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        var queryString = window.location.href;
+        var params = queryString.split('?')[1];
+        var dia = params.split('&')[0];
+        var id = params.split('&')[1];
+        dia=dia.split('=')[1];
+        id=id.split('=')[1];
+        console.log(dia);
+        console.log(id);
+
+        google.charts.load('current', {'packages': ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+
+        var json;
+        var ourrequest = new XMLHttpRequest();
+        ourrequest.open('GET', 'http://18.236.66.87/carrosdia?dia='+dia+'&id='+id);
+        ourrequest.onload = function () {
+            var ourdata = JSON.parse(ourrequest.responseText);
+            json = ourdata;
+        };
+        ourrequest.send();
+
+        function drawChart() {
+
+
+            var data = new google.visualization.DataTable();
+
+
+// Declare columns
+            data.addColumn('string', 'Horário');
+            data.addColumn('number', 'Quantidade de Carros');
+
+// Add data.
+            for (i = 0; i < 23; i++) {
+                data.addRows([
+                    [i + ':00', json[i]],
+                ]);
+            }
+
+            var options = {
+                title: 'Quantidade de veiculos por Hora',
+                curveType: 'function',
+                legend: {position: 'bottom'}
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+
+        function redraw() {
+
+
+        }
+
+
+        function myFunction() {
+            document.getElementById("demo").innerHTML = "Hello World";
+        }
+    </script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Car Counter</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/mapa">Mapa<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Cadastro
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/cadastrar_sensor">Cadastrar Sensor</a>
+          <a class="dropdown-item" href="/alterar_sensor#">Alterar Sensor</a>
+        </div>
+      </li>
+              <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Relatório
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/relatorio_diario">Relatório Diário</a>
+          <a class="dropdown-item" href="/relatorio_tabela">Relatório Tabela</a>
+          <a class="dropdown-item" href="/relatorio_calendario">Relatório Calendário</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Sair</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+
+<div id="curve_chart" style="width: 80%; height: 80%"></div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+</body>
+</html>
