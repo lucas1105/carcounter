@@ -10,6 +10,8 @@ import datetime
 from mysql_database import read_sensores, insert_sensores, read_usuarios, insert_usuario, read_carros, insert_carro, logincheck, read_carrosdia,read_carrostabela, updatesensor, read_carroscalendario
 import time
 
+from tests import test_request
+
 eventlet.monkey_patch()
 app = Flask(__name__, static_url_path='/static')
 
@@ -180,7 +182,8 @@ def carros():
             ids = []
             for horario in list_horarios:
                 print(horario)
-                carro = {'idsensor': idsensor, 'horario': horario}
+                now = datetime.datetime.now().strftime("%Y-%m-%d " + horario)
+                carro = {'idsensor': idsensor, 'horario': now}
                 str(insert_carro(carro))
             return jsonify(read_carros())
         elif request.form is not None:
@@ -198,6 +201,38 @@ def carros():
     else:
         return ''
 
+
+@app.route('/test_carros')
+def test_carros():
+    """
+
+    :return:
+    """
+
+    total = 0
+    sucesso = 0
+    erro = 0
+    for i in range(0, 4, 1):
+        print('Sending request ' + str(i + 1))
+        data = {'passagens': '14:19:00,14:19:01',
+                'id': '1'}
+        delay = test_request('http://18.236.66.87/carros', data)
+        if delay:
+            total += delay
+            sucesso += 1
+        else:
+            erro += 1
+            print('Request ' + str(i + 1) + ' failed')
+
+    print('Total time: ' + str(total) + ' segundos')
+
+    if sucesso > 0:
+        tempo_medio = total/sucesso
+    else:
+        tempo_medio = 'N/A'
+    dados_teste = {'tempo_total':total, 'tempo_medio':tempo_medio, 'sucessos': sucesso, 'erros': erro}
+
+    return jsonify(dados_teste)
 
 
 if __name__ == '__main__':
