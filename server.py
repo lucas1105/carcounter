@@ -172,6 +172,7 @@ def carros():
     elif request.method == 'POST':
         # Verifica se tem um JSON no POST, caso no tenha procura no FORM
         if request.json is not None:
+            print('ola')
             dados = request.json
             idsensor = dados.get('id')
             str_horarios = dados.get('passagens')
