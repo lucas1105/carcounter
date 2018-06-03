@@ -209,10 +209,11 @@ def test_carros():
     :return:
     """
 
-    tentativas = int(request.args.get('tries'))
+    tentativas = request.args.get('tries')
     if not tentativas:
-        # ja squei
         tentativas = 5
+    else:
+        tentativas = int(tentativas)
     total = 0
     sucesso = 0
     erro = 0
