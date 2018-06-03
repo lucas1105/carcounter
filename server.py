@@ -209,10 +209,14 @@ def test_carros():
     :return:
     """
 
+    tentativas = int(request.args.get('tries'))
+    if not tentativas:
+        # ja squei
+        tentativas = 5
     total = 0
     sucesso = 0
     erro = 0
-    for i in range(0, 4, 1):
+    for i in range(0, tentativas, 1):
         print('Sending request ' + str(i + 1))
         data = {'passagens': '14:19:00,14:19:01',
                 'id': '1'}
