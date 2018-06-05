@@ -73,8 +73,11 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        <a class="nav-link" href="/">Início<span class="sr-only">(current)</span></a>
+      </li>
       <li class="nav-item active">
-        <a class="nav-link" href="/mapa">Mapa<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/mapa">Mapa<span class="sr-only"></span></a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -160,6 +163,8 @@ function addMarker(location) {
      <input class="input" type ="text" id="nomesensor" name = "Nome do sensor" /></p>
      <p> Descrição</p>
      <input class ="input" type ="text" id= "descricao"name = "Descricao" /></p>
+     <p> Fluxo Máximo</p>
+     <input class ="input" type ="text" id= "fluxomax"name = "fluxomax" /></p>
      <input id="idsensor" type ="text" name ="idsensor"/>
          <p class ="botao" id="botao"><input type = "submit" value = "Cadastrar Sensor" /></p>
       </form>

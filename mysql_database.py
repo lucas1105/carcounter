@@ -39,9 +39,9 @@ def read_sensores():
     # Dict pra retornar um JSON no webserver
     sensores_list = []
 
-    for (idsensores, idusuario, lat, lon, nome, descricao) in cursor:
-        sensores_list.append({'idsensor': idsensores, 'idusuario': idusuario, 'lat': lat, 'lon': lon, 'nome': nome,
-                         'descricao': descricao})
+    for (idsensores, idusuario, lat, lon, nome, descricao,fluxomax) in cursor:
+        sensores_list.append({'idsensor': idsensores, 'idusuario': idusuario,'lat': lat, 'lon': lon, 'nome': nome,
+                         'descricao': descricao, 'fluxomax':fluxomax})
 
     cursor.close()
     cnx.close()
@@ -202,16 +202,34 @@ def read_carroscalendario(diai, diaf, id):
 
     return dias
 
+def read_fluxo():
+
+    cnx = connect()
+    cursor = cnx.cursor(buffered=True)
+
+    query=("select idsensores, fluxomax, nome from sensores")
+    cursor.execute(query)
+    sensores=cursor.fetchall()
+    list_nome=[]
+    list_fluxo=[]
+    list_sensores=[]
+    list_contagem=[]
+    for i in range(len(sensores)):
+        query=("select count(idcarros) from carros where horario between (now() - interval 1 HOUR) and now() and idsensor ="+str(sensores[i][0]))
+        cursor.execute(query)
+        contagem=cursor.fetchone()
+        list_nome.append(sensores[i][2])
+        list_fluxo.append(sensores[i][1])
+        list_sensores.append(sensores[i][0])
+        list_contagem.append(contagem[0])
+    json={'sensores':list_sensores,'fluxos':list_fluxo,'nomes':list_nome, 'contagens':list_contagem}
+    return json
+
+
 
 
 def insert_carro(carro):
-    """
-    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
 
-    :param sensor: dict contendo os dados de um sensor
-    :type sensor: dict
-    :return:
-    """
 
     cnx = connect()
 
@@ -231,23 +249,16 @@ def insert_carro(carro):
     return idcarro
 
 def insert_sensores(sensor):
-    """
-    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
 
-    :param sensor: dict contendo os dados de um sensor
-    :type sensor: dict
-    :return:
-    """
 
     cnx = connect()
 
     cursor = cnx.cursor()
 
-    query = ("INSERT INTO sensores (idusuario, lat, lon, nome, descricao) "
-             "VALUES (%(idusuario)s, %(lat)s, %(lon)s, %(nome)s, %(descricao)s)")
+    query = ("INSERT INTO sensores (idusuario, lat, lon, nome, descricao, fluxomax) "
+             "VALUES (%(idusuario)s, %(lat)s, %(lon)s, %(nome)s, %(descricao)s, %(fluxomax)s)")
 
     # Insert new employee
-    print(sensor)
     cursor.execute(query, sensor)
     idsensor = cursor.lastrowid
 
@@ -259,20 +270,12 @@ def insert_sensores(sensor):
     return idsensor
 
 def updatesensor(sensor):
-    """
-    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
-
-    :param sensor: dict contendo os dados de um sensor
-    :type sensor: dict
-    :return:
-    """
 
     cnx = connect()
-    print(sensor["lat"])
     cursor = cnx.cursor()
 
     query = ("UPDATE sensores SET idusuario =%(idusuario)s"
-             ", lat=%(lat)s, lon=%(lon)s, nome=%(nome)s, descricao=%(descricao)s WHERE idsensores=%(idsensor)s")
+             ", lat=%(lat)s, lon=%(lon)s, nome=%(nome)s, descricao=%(descricao)s, fluxomax=%(fluxomax)s WHERE idsensores=%(idsensor)s")
 
     # Insert new employee
     print(sensor)
@@ -287,13 +290,7 @@ def updatesensor(sensor):
     return idsensor
 
 def insert_usuario(usuario):
-    """
-    Funcao para inserir um sensor no banco. Lucas viado essa porra aceita dict tbm dict mesma merda que JSON quase
 
-    :param sensor: dict contendo os dados de um sensor
-    :type sensor: dict
-    :return:
-    """
 
     cnx = connect()
 

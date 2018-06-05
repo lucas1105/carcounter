@@ -7,7 +7,7 @@ from flask import Flask, abort, jsonify, render_template, flash, redirect, sessi
 import eventlet
 import datetime
 # local
-from mysql_database import read_sensores, insert_sensores, read_usuarios, insert_usuario, read_carros, insert_carro, logincheck, read_carrosdia,read_carrostabela, updatesensor, read_carroscalendario
+from mysql_database import read_fluxo, read_sensores, insert_sensores, read_usuarios, insert_usuario, read_carros, insert_carro, logincheck, read_carrosdia,read_carrostabela, updatesensor, read_carroscalendario
 import time
 
 from tests import test_request
@@ -19,13 +19,17 @@ app = Flask(__name__, static_url_path='/static')
 @app.route('/', methods=["GET", "POST"])
 def login():
     if request.method == 'GET':
-        return render_template('mapa.html')
+        return render_template('index.html')
     else:
         user=request.form['user']
         password=request.form['password']
         usuario = logincheck(user,password)
         idusuario = usuario[0]
     return redirect
+
+@app.route('/fluxo')
+def fluxo():
+    return jsonify(read_fluxo())
 
 @app.route('/relatorio_calendario')
 def relatorio_calendario():
@@ -61,7 +65,7 @@ def alterasensor():
         aux = request.form
         # verificar usuario depois
         dados = {'idusuario': 1, 'lat': float(aux['lat']), 'idsensor': int(aux['idsensor']),
-                 'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descricao']}
+                 'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descricao'], 'fluxomax':aux['fluxomax']}
         updatesensor(dados)
     return redirect("/")
 
@@ -108,7 +112,7 @@ def sensores():
             aux = request.form
             #verificar usuario depois
             dados = {'idusuario': 1, 'lat': float(aux['lat']),
-                     'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descricao']}
+                     'lon': float(aux['lon']), 'nome': aux['Nome do sensor'], 'descricao': aux['Descricao'], 'fluxomax': aux['fluxomax']}
         else:
             dados = None
 

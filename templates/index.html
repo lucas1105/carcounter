@@ -11,8 +11,8 @@
           background-color: #f5f5f5;
         }
           #map {
-    height: 70%;
-    width: 70%;
+    height: 80%;
+    width: 55%;
     position:absolute;
     left:2%;
     top:10% ;
@@ -24,30 +24,14 @@
     margin: 0;
     padding: 0;
   }
-  form{
-      height: 70%;
-      border-radius: 25px;
-      padding: 20px;
+  #table_div{
+            height: 80%;
+      width: 35%;
       position: absolute;
       right: 5%;
       top:10%;
       background-color: white;
-      border: 10px solid black;
-  }
-
-  .input {
-      width: 100%;
-  }
-  #idsensor{
-      display: none;
-  }
-          #botao{
-              margin:auto;
-              width: 50%;
-          }
-          #sel{
-              width: 100%;
-          }
+        }
         </style>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -57,26 +41,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
     <title>Car Counter</title>
-
-          <script>
-
-        var json;
-        var ourrequest = new XMLHttpRequest();
-        ourrequest.open('GET', 'http://18.236.66.87/sensores');
-        ourrequest.onload = function () {
-            var ourdata = JSON.parse(ourrequest.responseText);
-            json = ourdata;
-            var x=document.getElementById("sel");
-            var option;
-            for (i=0;i<json.sensores.length;i++){
-                option = document.createElement('option');
-                option.text=json.sensores[i].descricao;
-                option.value=i;
-                x.add(option);
-            }
-        };
-        ourrequest.send();
-    </script>
   </head>
   <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -119,89 +83,50 @@
   </div>
 </nav>
 
+
  <div id="map">
-<script>
-    function selecionasensor(){
-        var sensor=document.getElementById("sel");
-        document.getElementById("inputLat").value = json.sensores[sensor.options[sensor.selectedIndex].value].lat;
-        document.getElementById("inputLng").value = json.sensores[sensor.options[sensor.selectedIndex].value].lon;
-        document.getElementById("nomesensor").value = json.sensores[sensor.options[sensor.selectedIndex].value].descricao;
-        document.getElementById("descricao").value = json.sensores[sensor.options[sensor.selectedIndex].value].nome;
-        document.getElementById("idsensor").value = json.sensores[sensor.options[sensor.selectedIndex].value].idsensor;
-        var position = {lat: json.sensores[sensor.options[sensor.selectedIndex].value].lat, lng: json.sensores[sensor.options[sensor.selectedIndex].value].lon};
-        if(!marker){
-            addMarker(position);
-        }else{
-            marker.setMap(null);
-            addMarker(position);
-        }
-    }
-</script>
+
+
      <script>
+
+     </script>
+     <script type="text/javascript">
+
+        var json;
+        var ourrequest = new XMLHttpRequest();
+        ourrequest.open('GET', 'http://127.0.0.1:5000/sensores');
+        ourrequest.onload = function () {
+            var ourdata = JSON.parse(ourrequest.responseText);
+            json = ourdata;
+        };
+        ourrequest.send();
+
          var map;
-        var sensor_point;
-        var marker
+var sensor_point;
+var marker
 
 function initMap() {
+
+
     var inicial = {lat: -26.915060, lng: -48.663639};
 
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 15,
         center: inicial,
     });
+    for (i=0;i<json.sensores.length;i++){
+        var position = {lat: json.sensores[i].lat, lng: json.sensores[i].lon};
+        var marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: json.sensores[i].descricao
+        });
 
-    // This event listener will call addMarker() when the map is clicked.
-    map.addListener('click', function (event) {
-
-
-
-        if (!marker){
-            addMarker(event.latLng);
-        }
-        else{
-            marker.setPosition(event.latLng)
-        }
-        document.getElementById("inputLat").value=event.latLng.lat();
-        document.getElementById("inputLng").value=event.latLng.lng();
-    });
-}
-
-// Adds a marker to the map and push to the array.
-function addMarker(location) {
-    marker = new google.maps.Marker({
-        position: location,
-        map: map
-    });
-    sensor_point=marker;
+    }
 }
      </script>
  </div>
 
-
- <div id="form">
- <form action = "http://18.236.66.87/alterasensor" method = "POST">
-     <h1>Alterar Sensor</h1>
-     <p> Sensor</p>
-     <select id="sel" onchange="selecionasensor()">
-  <option value="Selecione">Selecione</option>
-</select></p>
-         <p> Clique no mapa para posicionar o sensor</p>
-     <p> Latitude </p>
-     <input class="input" id="inputLat" type = "text" name = "lat" readonly/></p>
-     <p> Longitude </p>
-     <input class="input" id="inputLng" type ="text" name = "lon" readonly/></p>
-     <p> Nome </p>
-     <input class="input" type ="text" id="nomesensor" name = "Nome do sensor" /></p>
-     <p> Descrição</p>
-     <input class ="input" type ="text" id= "descricao"name = "Descricao" /></p>
-     <p> Fluxo Máximo</p>
-     <input class ="input" type ="text" id= "fluxomax"name = "fluxomax" /></p>
-     <input id="idsensor" type ="text" name ="idsensor"/>
-         <p class ="botao" id="botao"><input type = "submit" value = "Alterar Sensor" /></p>
-      </form>
-
-
- </div>
 
 
  </div>
@@ -214,12 +139,13 @@ function addMarker(location) {
     </footer>
 
 
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
 	<script src="vendor/bootstrap/js/popper.js"></script>
 	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -244,5 +170,48 @@ function addMarker(location) {
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCr35RuV58Q0f6Obi_zJU8y-6L0zHHH2Jo&callback=initMap">
     </script>
 
+        <div id="table_div"></div>
+
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        var json;
+        var requestsensores = new XMLHttpRequest();
+        requestsensores.open('GET','http://127.0.0.1:5000/fluxo');
+        requestsensores.onload = function () {
+            var datasensores = JSON.parse(requestsensores.responseText);
+            json=datasensores;
+            console.log(json.sensores[0])
+            google.charts.load('current', {'packages':['table']});
+            google.charts.setOnLoadCallback(drawTable);
+        }
+        requestsensores.send();
+
+
+       function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Index');
+        data.addColumn('string', 'Nome do Sensor');
+        data.addColumn('number', 'Fluxo (Ultima hora)');
+        data.addColumn('boolean', 'Congestionamento');
+
+        for (i = 0 ; i < json.sensores.length; i ++) {
+            var congest;
+            if (json.contagens[i]>json.fluxos[i]){
+                congest=true
+            }else{
+                congest=false
+            }
+            data.addRows([
+            [json.sensores[i], json.nomes[i], json.contagens[i], congest]
+            ]);
+        }
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+
+        table.draw(data, {showRowNumber: false, width: '100%', height: '100%', page:'enable'});
+      }
+    </script>
   </body>
 </html>
