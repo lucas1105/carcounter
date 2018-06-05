@@ -94,7 +94,7 @@
 
         var json;
         var ourrequest = new XMLHttpRequest();
-        ourrequest.open('GET', 'http://127.0.0.1:5000/sensores');
+        ourrequest.open('GET', 'http://18.236.66.87/sensores');
         ourrequest.onload = function () {
             var ourdata = JSON.parse(ourrequest.responseText);
             json = ourdata;
@@ -178,7 +178,7 @@ function initMap() {
 
         var json;
         var requestsensores = new XMLHttpRequest();
-        requestsensores.open('GET','http://127.0.0.1:5000/fluxo');
+        requestsensores.open('GET','http://18.236.66.87/fluxo');
         requestsensores.onload = function () {
             var datasensores = JSON.parse(requestsensores.responseText);
             json=datasensores;
